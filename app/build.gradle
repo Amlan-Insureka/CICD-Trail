@@ -18,7 +18,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: "androidx.navigation.safeargs"
-apply plugin: "org.sonarqube:4.0.0.2929"
+
 
 android {
     compileSdkVersion 33
@@ -130,10 +130,3 @@ dependencies {
     implementation "androidx.camera:camera-view:${camerax_version}"
 }
 
-sonar {
-    properties {
-        property("sonar.projectKey", "GithubPR-review")
-        property("sonar.organization", "myOrganization")
-        property("sonar.host.url", "https://sonarcloud.io")
-    }
-}
