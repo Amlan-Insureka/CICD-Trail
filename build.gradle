@@ -28,9 +28,7 @@ buildscript {
             url "https://plugins.gradle.org/m2/"
         }
     }
-    plugins {
-        id "org.sonarqube" version "4.0.0.2929"
-    }
+
     dependencies {
         classpath 'com.android.tools.build:gradle:7.2.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.10"
@@ -38,6 +36,7 @@ buildscript {
         classpath("org.jlleitschuh.gradle:ktlint-gradle:10.2.1")
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
+        classpath "org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:4.0.0.2929"
     }
 }
 
@@ -50,12 +49,7 @@ allprojects {
 }
 apply plugin: "org.jlleitschuh.gradle.ktlint-idea"
 
-sonar {
-    properties {
-        property "sonar.projectKey", "GithubPR-review"
-        property "sonar.projectName", "GithubPR-review"
-    }
-}
+
 
 task clean(type: Delete) {
     delete rootProject.buildDir
