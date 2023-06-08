@@ -1,8 +1,8 @@
-name: reviewdog
+name: Formatting
 on: [pull_request]
 jobs:
   ktlint:
-    name: Check Code Quality
+    name: KTlint
     runs-on: ubuntu-latest
 
     steps:
