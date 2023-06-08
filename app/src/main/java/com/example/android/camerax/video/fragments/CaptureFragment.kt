@@ -24,7 +24,7 @@
  *   - this app informs CameraX recording to stop with recording.stop() (or recording.close()).
  *   - CameraX notify this app that the recording is indeed stopped, with the Finalize event.
  *   - this app starts VideoViewer fragment to view the captured result.
-*/
+ */
 
 package com.example.android.camerax.video.fragments
 
@@ -37,11 +37,17 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.TextView
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
-import androidx.camera.video.*
+import androidx.camera.video.MediaStoreOutputOptions
+import androidx.camera.video.Quality
+import androidx.camera.video.QualitySelector
+import androidx.camera.video.Recorder
+import androidx.camera.video.Recording
+import androidx.camera.video.VideoCapture
+import androidx.camera.video.VideoRecordEvent
 import androidx.concurrent.futures.await
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -60,9 +66,11 @@ import com.example.android.camerax.video.databinding.FragmentCaptureBinding
 import com.example.android.camerax.video.extensions.getAspectRatio
 import com.example.android.camerax.video.extensions.getAspectRatioString
 import com.example.android.camerax.video.extensions.getNameString
-import kotlinx.coroutines.*
+import kotlinx.coroutines.Deferred
+import kotlinx.coroutines.async
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 class CaptureFragment : Fragment() {
 
@@ -89,6 +97,7 @@ class CaptureFragment : Fragment() {
         FINALIZED, // Recording just completes, disable all RECORDING UI controls.
         RECOVERY // For future use.
     }
+
     private var cameraIndex = 0
     private var qualityIndex = DEFAULT_QUALITY_IDX
     private var audioEnabled = false
@@ -220,6 +229,7 @@ class CaptureFragment : Fragment() {
     }
 
     data class CameraCapability(val camSelector: CameraSelector, val qualities: List<Quality>)
+
     /**
      * Query and cache this platform's camera capabilities, run only once.
      */
@@ -320,6 +330,7 @@ class CaptureFragment : Fragment() {
                             currentRecording?.pause()
                             captureViewBinding.stopButton.visibility = View.VISIBLE
                         }
+
                         is VideoRecordEvent.Pause -> currentRecording?.resume()
                         is VideoRecordEvent.Resume -> currentRecording?.pause()
                         else -> throw IllegalStateException("recordingState in unknown state")
@@ -375,15 +386,19 @@ class CaptureFragment : Fragment() {
                 // placeholder: we update the UI with new status after this when() block,
                 // nothing needs to do here.
             }
+
             is VideoRecordEvent.Start -> {
                 showUI(UiState.RECORDING, event.getNameString())
             }
+
             is VideoRecordEvent.Finalize -> {
                 showUI(UiState.FINALIZED, event.getNameString())
             }
+
             is VideoRecordEvent.Pause -> {
                 captureViewBinding.captureButton.setImageResource(R.drawable.ic_resume)
             }
+
             is VideoRecordEvent.Resume -> {
                 captureViewBinding.captureButton.setImageResource(R.drawable.ic_pause)
             }
@@ -441,6 +456,7 @@ class CaptureFragment : Fragment() {
                     it.audioSelection.visibility = View.VISIBLE
                     it.qualitySelection.visibility = View.VISIBLE
                 }
+
                 UiState.RECORDING -> {
                     it.cameraButton.visibility = View.INVISIBLE
                     it.audioSelection.visibility = View.INVISIBLE
@@ -451,10 +467,12 @@ class CaptureFragment : Fragment() {
                     it.stopButton.visibility = View.VISIBLE
                     it.stopButton.isEnabled = true
                 }
+
                 UiState.FINALIZED -> {
                     it.captureButton.setImageResource(R.drawable.ic_start)
                     it.stopButton.visibility = View.INVISIBLE
                 }
+
                 else -> {
                     val errorMsg = "Error: showUI($state) is not supported"
                     Log.e(TAG, errorMsg)
@@ -545,6 +563,7 @@ class CaptureFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initCameraFragment()
     }
+
     override fun onDestroyView() {
         _captureViewBinding = null
         super.onDestroyView()
