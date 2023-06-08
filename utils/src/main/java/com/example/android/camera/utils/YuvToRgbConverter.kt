@@ -90,10 +90,12 @@ class YuvToRgbConverter(context: Context) {
     }
 
     private fun needCreateAllocations(image: Image, yuvBuffer: YuvByteBuffer): Boolean {
-        return (inputAllocation == null ||               // the very 1st call
-            inputAllocation!!.type.x != image.width ||   // image size changed
-            inputAllocation!!.type.y != image.height ||
-            inputAllocation!!.type.yuv != yuvBuffer.type || // image format changed
-            bytes.size == yuvBuffer.buffer.capacity())
+        return (
+            inputAllocation == null || // the very 1st call
+                inputAllocation!!.type.x != image.width || // image size changed
+                inputAllocation!!.type.y != image.height ||
+                inputAllocation!!.type.yuv != yuvBuffer.type || // image format changed
+                bytes.size == yuvBuffer.buffer.capacity()
+            )
     }
 }

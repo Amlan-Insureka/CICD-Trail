@@ -35,7 +35,7 @@ class MainInstrumentedTest {
 
     @get:Rule
     val activityRule: ActivityTestRule<MainActivity> =
-            ActivityTestRule(MainActivity::class.java)
+        ActivityTestRule(MainActivity::class.java)
 
     @Test
     fun useAppContext() {

@@ -36,7 +36,8 @@ import com.example.android.camerax.video.databinding.FragmentPermissionBinding
 
 private var PERMISSIONS_REQUIRED = arrayOf(
     Manifest.permission.CAMERA,
-    Manifest.permission.RECORD_AUDIO)
+    Manifest.permission.RECORD_AUDIO
+)
 
 /**
  * This [Fragment] requests permissions and, once granted, it will navigate to the next fragment
@@ -66,8 +67,10 @@ class PermissionsFragment : Fragment() {
             if (hasPermissions(requireContext())) {
                 navigateToCapture()
             } else {
-                Log.e(PermissionsFragment::class.java.simpleName,
-                    "Re-requesting permissions ...")
+                Log.e(
+                    PermissionsFragment::class.java.simpleName,
+                    "Re-requesting permissions ..."
+                )
                 activityResultLauncher.launch(PERMISSIONS_REQUIRED)
             }
         }.root
@@ -79,8 +82,7 @@ class PermissionsFragment : Fragment() {
         }
     }
     private val activityResultLauncher =
-        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions())
-        { permissions ->
+        registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { permissions ->
             // Handle Permission granted/rejected
             var permissionGranted = true
             permissions.entries.forEach {
@@ -98,7 +100,8 @@ class PermissionsFragment : Fragment() {
     private fun navigateToCapture() {
         lifecycleScope.launchWhenStarted {
             Navigation.findNavController(requireActivity(), R.id.fragment_container).navigate(
-                PermissionsFragmentDirections.actionPermissionsToCapture())
+                PermissionsFragmentDirections.actionPermissionsToCapture()
+            )
         }
     }
 }
